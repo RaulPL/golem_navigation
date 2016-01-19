@@ -1,0 +1,11 @@
+<launch>
+    <arg name="map_file" default="lab_413.yaml"/>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find golem_navigation)/resources/$(arg map_file)"/>
+
+    <!-- AMCL -->
+    <node pkg="amcl" type="amcl" name="amcl">
+        <rosparam file="$(find golem_navigation)/config/golem_amcl.yaml" command="load"/>
+        <param name="odom_frame" value="/RosAria/pose"/>
+    </node>
+</launch>

@@ -1,0 +1,41 @@
+<launch>
+
+    <arg name="map_places" default="lab_413_places.yaml"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_filt" args="0.05 0.0 0.25 0 0 0 base_link laser_filt 50"/>
+
+    <!-- Laser filter -->
+    <node pkg="patrol_filter" type="patrol_filter_node" name="patrol_filter_node"/>
+
+    <!-- Localization swapper -->
+	<node name="swapper_node" pkg="golem_navigation" type="swapper_node.py" output="screen">
+	    <param name="amcl_path" value="$(find golem_navigation)/launch/golem_amcl.launch" />
+	    <param name="gmapping_path" value="$(find golem_navigation)/launch/golem_gmapping.launch" />
+	</node>
+
+    <!-- move_base -->
+    <remap from="cmd_vel" to="/RosAria/cmd_vel"/>
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+	    <rosparam file="$(find golem_navigation)/config/move_base.yaml" command="load" />
+	    <rosparam file="$(find golem_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+	    <rosparam file="$(find golem_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+	    <rosparam file="$(find golem_navigation)/config/local_costmap_params.yaml" command="load" />
+	    <rosparam file="$(find golem_navigation)/config/global_costmap_params.yaml" command="load" />
+	    <remap from="/RosAria/cmd_vel" to="/cmd_vel"/>
+    </node>
+
+    <!-- Navigation services -->
+	<node name="battery_inspector_node" pkg="golem_navigation" type="battery_inspector_node" />
+	<node name="door_checker_node" pkg="golem_navigation" type="door_checker_node" />
+	<node name="pose_sender_node" pkg="golem_navigation" type="pose_sender_node" />
+	<node name="goal_parser_node" pkg="golem_navigation" type="goal_parser_script.py" output="screen">
+	    <param name="places_path" value="$(find golem_navigation)/resources/$(arg map_places)" />
+	    <param name="vel_params" value="$(find golem_navigation)/resources/vel_params.yaml" />
+	</node>
+
+	<!-- Follow node -->
+	<!--
+	<node name="follow_node" pkg="golem_navigation" type="follow_node.py" output="screen"/>
+	-->
+</launch>
