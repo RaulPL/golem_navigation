@@ -60,10 +60,10 @@ class Swapper(object):
         return JsonSrvResponse(json_str)
 
     def start_gmapping(self, req):
-        self.launch_process.shutdown()
         # Save the current pose
         self.amcl_pose = rospy.wait_for_message('/amcl_pose',
                                                 PoseWithCovarianceStamped)
+        self.launch_process.shutdown()
         rospy.loginfo(
                 'Storing AMCL pose: {0}, {1}'.format(
                         self.amcl_pose.pose.pose.position,
