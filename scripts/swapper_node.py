@@ -8,6 +8,7 @@ import json
 
 from roslaunch import rlutil, parent, configure_logging
 from geometry_msgs.msg import PoseWithCovarianceStamped
+from json_msgs.srv import *
 
 
 class Swapper(object):
