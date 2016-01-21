@@ -50,13 +50,14 @@ class Swapper(object):
         self.launch_process = Swapper.launch_file(self.method_paths['amcl'])
         self.current_method = 'amcl'
         # load the last pose before gmapping started
-        self.pose_pub.publish(self.amcl_pose)
         rospy.loginfo(
                 'Setting AMCL pose: {0}, {1}'.format(
                         self.amcl_pose.pose.pose.position,
                         self.amcl_pose.pose.pose.orientation)
         )
         json_str = json.dumps(dict(method=self.current_method))
+        self.amcl_pose.header.stamp = rospy.Time.now()
+        self.pose_pub.publish(self.amcl_pose)
         return JsonSrvResponse(json_str)
 
     def start_gmapping(self, req):
