@@ -29,6 +29,14 @@ if __name__ == '__main__':
         pose = PoseWithCovarianceStamped()
         pose.pose.pose.position.x = dist
         pose.pose.pose.orientation.w = 1.0
+        cov = []
+        for i in range(6):
+            for j in range(6):
+                if i == j:
+                    cov.append(1)
+                else:
+                    cov.append(0)
+        pose.pose.covariance = cov
         pub.publish(pose)
 
     except rospy.ROSInterruptException:

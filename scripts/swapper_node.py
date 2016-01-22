@@ -92,7 +92,8 @@ class Swapper(object):
             pass
 
     def shutdown(self):
-        pass
+        self.launch_process.shutdown()
+        rospy.loginfo('Stopping Swapper node ...')
 
 if __name__ == '__main__':
     # Define the only two possible launch files with get params
