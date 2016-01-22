@@ -56,6 +56,7 @@ class Swapper(object):
                         self.amcl_pose.pose.pose.orientation)
         )
         json_str = json.dumps(dict(method=self.current_method))
+        rospy.wait_for_service('/global_localization')
         self.amcl_pose.header.stamp = rospy.Time.now()
         self.pose_pub.publish(self.amcl_pose)
         return JsonSrvResponse(json_str)
