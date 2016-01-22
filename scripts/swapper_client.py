@@ -5,7 +5,8 @@
 import sys
 import rospy
 from json_msgs.srv import *
-from geometry_msgs.msg import PoseWithCovarianceStamped
+from geometry_msgs.msg import (PoseWithCovarianceStamped, PoseWithCovariance,
+                               Quaternion, Pose, Point)
 
 
 def service_call(service_name):
@@ -26,21 +27,36 @@ if __name__ == '__main__':
         dist = float(sys.argv[1])
         pub = rospy.Publisher('/initialpose', PoseWithCovarianceStamped,
                               queue_size=1)
-        pose = PoseWithCovarianceStamped()
-        pose.pose.pose.position.x = dist
-        pose.pose.pose.orientation.w = 1.0
-        cov = []
-        for i in range(6):
-            for j in range(6):
-                if i == j:
-                    cov.append(1)
-                else:
-                    cov.append(0)
-        pose.pose.covariance = cov
-        pose.header.stamp = rospy.Time.now()
-        pose.header.frame_id = 'map'
-        print(pose)
-        pub.publish(pose)
+        # pose = PoseWithCovarianceStamped()
+        # pose.pose.pose.position.x = dist
+        # pose.pose.pose.orientation.w = 1.0
+        # cov = []
+        # for i in range(6):
+        #     for j in range(6):
+        #         if i == j:
+        #             cov.append(0.25)
+        #         else:
+        #             cov.append(0.0)
+        # pose.pose.covariance = cov
+        p = PoseWithCovarianceStamped()
+        msg = PoseWithCovariance()
+        msg.pose = Pose(Point(-0.767, -0.953, 0.000),
+                        Quaternion(0.000, 0.000, -0.0, 0.9999))
+        msg.covariance = [0.25, 0.0, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.25, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.06853891945200942]
+        p.pose = msg
+        p.header.frame_id = 'map'
+        p.header.stamp = rospy.Time.now()
+        print(p)
+        pub.publish(p)
+        # pose.header.stamp = rospy.Time.now()
+        # pose.header.frame_id = 'map'
+        # print(pose)
+        # pub.publish(pose)
 
     except rospy.ROSInterruptException:
         print('Exception')
