@@ -22,6 +22,7 @@ if __name__ == '__main__':
     try:
         # service_name = str(sys.argv[1])
         # print(service_call(service_name))
+        rospy.init_node('swapper_client_node', anonymous=True)
         dist = float(sys.argv[1])
         pub = rospy.Publisher('/initialpose', PoseWithCovarianceStamped,
                               queue_size=1)
