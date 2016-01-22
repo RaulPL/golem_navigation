@@ -37,6 +37,7 @@ if __name__ == '__main__':
                 else:
                     cov.append(0)
         pose.pose.covariance = cov
+        pose.header.stamp = rospy.Time.now()
         pub.publish(pose)
 
     except rospy.ROSInterruptException:
