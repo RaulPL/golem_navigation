@@ -26,7 +26,7 @@ if __name__ == '__main__':
         rospy.init_node('swapper_client_node', anonymous=True)
         dist = float(sys.argv[1])
         pub = rospy.Publisher('/initialpose', PoseWithCovarianceStamped,
-                              queue_size=1)
+                              queue_size=1, latch=True)
         # pose = PoseWithCovarianceStamped()
         # pose.pose.pose.position.x = dist
         # pose.pose.pose.orientation.w = 1.0
