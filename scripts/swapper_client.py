@@ -39,6 +39,7 @@ if __name__ == '__main__':
         pose.pose.covariance = cov
         pose.header.stamp = rospy.Time.now()
         pose.header.frame_id = 'map'
+        print(pose)
         pub.publish(pose)
 
     except rospy.ROSInterruptException:
