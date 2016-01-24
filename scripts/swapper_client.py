@@ -5,8 +5,7 @@
 import sys
 import rospy
 from json_msgs.srv import *
-from geometry_msgs.msg import (PoseWithCovarianceStamped, PoseWithCovariance,
-                               Quaternion, Pose, Point)
+from geometry_msgs.msg import (PoseWithCovarianceStamped, Quaternion, Point)
 
 
 def service_call(service_name):
