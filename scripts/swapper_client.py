@@ -39,14 +39,16 @@ if __name__ == '__main__':
         pose_msg.header.frame_id = 'map'
         pose_msg.header.stamp = rospy.Time.now()
         print(pose_msg)
-        while True:
+        rate = rospy.Rate(10)
+        for i in range(100):
             pose_msg.header.stamp = rospy.Time.now()
             pub.publish(pose_msg)
-            c_pose = rospy.wait_for_message('/amcl_pose',
-                                            PoseWithCovarianceStamped)
-            if pose_msg.pose.pose.position.x == c_pose.pose.pose.position.x:
-                if pose_msg.pose.pose.position.y == c_pose.pose.pose.position.y:
-                    break
+            rate.sleep()
+            # c_pose = rospy.wait_for_message('/amcl_pose',
+            #                                 PoseWithCovarianceStamped)
+            # if pose_msg.pose.pose.position.x == c_pose.pose.pose.position.x:
+            #     if pose_msg.pose.pose.position.y == c_pose.pose.pose.position.y:
+            #         break
 
     except rospy.ROSInterruptException:
         print('Exception')
