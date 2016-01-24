@@ -25,7 +25,7 @@ if __name__ == '__main__':
         rospy.init_node('swapper_client_node')
         dist = float(sys.argv[1])
         pub = rospy.Publisher('/initialpose', PoseWithCovarianceStamped,
-                              latch=True)
+                              latch=True, queue_size=50)
         pose_msg = PoseWithCovarianceStamped()
         pose_msg.pose.pose.position = Point(-1.0, -1.0, 0.000)
         pose_msg.pose.pose.orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
         pose_msg.header.stamp = rospy.Time.now()
         print(pose_msg)
         rate = rospy.Rate(10)
-        for i in range(100):
+        for i in range(10):
             pose_msg.header.stamp = rospy.Time.now()
             pub.publish(pose_msg)
             rate.sleep()
