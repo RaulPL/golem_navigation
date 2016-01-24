@@ -18,37 +18,44 @@ def service_call(service_name):
         rospy.loginfo('Error')
 
 
-if __name__ == '__main__':
-    try:
-        # service_name = str(sys.argv[1])
-        # print(service_call(service_name))
+class TestInit(object):
+    def __init__(self):
         rospy.init_node('swapper_client_node')
-        dist = float(sys.argv[1])
-        pub = rospy.Publisher('/initialpose', PoseWithCovarianceStamped,
-                              latch=True, queue_size=50)
-        pose_msg = PoseWithCovarianceStamped()
-        pose_msg.pose.pose.position = Point(-1.0, -1.0, 0.000)
-        pose_msg.pose.pose.orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
+        self.FLAG = True
+        self.pose_msg = PoseWithCovarianceStamped()
+        self.pose_msg.pose.pose.position = Point(-1.0, -1.0, 0.000)
+        self.pose_msg.pose.pose.orientation = Quaternion(0.0, 0.0, 0.0, 1.0)
         covariance = [0.2, 0.0, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.2, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.0, 0.0, 0.0, 0.0, 0.06]
-        pose_msg.pose.covariance = covariance
-        pose_msg.header.frame_id = 'map'
-        pose_msg.header.stamp = rospy.Time.now()
-        print(pose_msg)
-        rate = rospy.Rate(10)
-        for i in range(10):
-            pose_msg.header.stamp = rospy.Time.now()
-            pub.publish(pose_msg)
-            rate.sleep()
-            # c_pose = rospy.wait_for_message('/amcl_pose',
-            #                                 PoseWithCovarianceStamped)
-            # if pose_msg.pose.pose.position.x == c_pose.pose.pose.position.x:
-            #     if pose_msg.pose.pose.position.y == c_pose.pose.pose.position.y:
-            #         break
+        self.pose_msg.pose.covariance = covariance
+        self.pose_msg.header.frame_id = 'map'
+        self.pub = rospy.Publisher('/initialpose', PoseWithCovarianceStamped,
+                                   latch=True, queue_size=50)
+        self.sub = rospy.Subscriber('/initialpose', PoseWithCovarianceStamped,
+                                    self.initial_pose_cb, queue_size=1)
+
+    def initial_pose_cb(self, data):
+        print(self.pose_msg)
+        self.FLAG = False
+
+    def run(self):
+        while self.FLAG:
+            self.pose_msg.header.stamp = rospy.Time.now()
+            self.pub.publish(self.pose_msg)
+
+
+if __name__ == '__main__':
+    try:
+        # service_name = str(sys.argv[1])
+        # print(service_call(service_name))
+
+        # dist = float(sys.argv[1])
+        test = TestInit()
+        test.run()
 
     except rospy.ROSInterruptException:
         print('Exception')
