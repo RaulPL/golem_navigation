@@ -57,8 +57,12 @@ class Swapper(object):
         )
         json_str = json.dumps(dict(method=self.current_method))
         rospy.wait_for_service('/global_localization')
-        self.amcl_pose.header.stamp = rospy.Time.now()
-        self.pose_pub.publish(self.amcl_pose)
+        # TODO: Find a better way to initialize the pose in amcl
+        rate = rospy.Rate(10)
+        for i in range(10):
+            self.amcl_pose.header.stamp = rospy.Time.now()
+            self.pose_pub.publish(self.amcl_pose)
+            rate.sleep()
         return JsonSrvResponse(json_str)
 
     def start_gmapping(self, req):

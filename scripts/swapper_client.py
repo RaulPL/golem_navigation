@@ -52,12 +52,12 @@ class TestInit(object):
 
 if __name__ == '__main__':
     try:
-        # service_name = str(sys.argv[1])
-        # print(service_call(service_name))
+        service_name = str(sys.argv[1])
+        print(service_call(service_name))
 
         # dist = float(sys.argv[1])
-        test = TestInit()
-        test.run()
+        # test = TestInit()
+        # test.run()
 
     except rospy.ROSInterruptException:
         print('Exception')
