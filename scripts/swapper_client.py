@@ -43,9 +43,11 @@ class TestInit(object):
         self.FLAG = False
 
     def run(self):
-        while self.FLAG:
+        rate = rospy.Rate(10)
+        for i in range(10):
             self.pose_msg.header.stamp = rospy.Time.now()
             self.pub.publish(self.pose_msg)
+            rate.sleep()
 
 
 if __name__ == '__main__':
