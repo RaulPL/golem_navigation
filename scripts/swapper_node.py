@@ -36,7 +36,7 @@ class Swapper(object):
                                               self.start_gmapping)
         self.pose_pub = rospy.Publisher('/initialpose',
                                         PoseWithCovarianceStamped,
-                                        queue_size=1)
+                                        queue_size=1, latch=True)
 
         self.amcl_pose = rospy.wait_for_message('/amcl_pose',
                                                 PoseWithCovarianceStamped)
@@ -49,7 +49,7 @@ class Swapper(object):
         self.launch_process.shutdown()
         self.launch_process = Swapper.launch_file(self.method_paths['amcl'])
         self.current_method = 'amcl'
-        # load the last pose before gmapping started
+        # load the last stored pose
         rospy.loginfo(
                 'Setting AMCL pose: {0}, {1}'.format(
                         self.amcl_pose.pose.pose.position,
@@ -100,8 +100,6 @@ class Swapper(object):
         rospy.loginfo('Stopping Swapper node ...')
 
 if __name__ == '__main__':
-    # Define the only two possible launch files with get params
-    # only one localization method has to be running
     amcl_path = rospy.get_param('/swapper_node/amcl_path')
     gmapping_path = rospy.get_param('/swapper_node/gmapping_path')
     swapper = Swapper(amcl_path, gmapping_path, 'amcl')

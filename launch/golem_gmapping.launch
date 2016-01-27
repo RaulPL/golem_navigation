@@ -1,5 +1,10 @@
 <launch>
-    <arg name="filter_laser" default="true"/>
+    <arg name="stand_alone" default="false"/>
+    <group if="$(arg stand_alone)">
+        <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser_filt" args="0.05 0.0 0.25 0 0 0 base_link laser_filt 50"/>
+        <!-- Laser filter -->
+        <node pkg="patrol_filter" type="patrol_filter_node" name="patrol_filter_node"/>
+    </group>
     <!-- Gmapping -->
     <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
         <param name="base_frame" value="base_link"/>
