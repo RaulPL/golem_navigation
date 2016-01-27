@@ -2,11 +2,13 @@
 Navigation functions for the robot Golem-III.
 
 To run all the navigation functions use:
+
 $ roslaunch golem_navigation golem_navigation.launch map_places:=places.yaml
 
 places.yaml was generated using rqt_topo_map and has to be stored in the resources folder.
 
 ### Stand alone gmapping
+
 $ roslaunch golem_navigation golem_gmapping.launch stand_alone:=true
 
 ### navigate_service
