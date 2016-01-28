@@ -180,10 +180,10 @@ class GoalParser(object):
                             return JsonSrvResponse(
                                 '{"status":"navigation_error"}')
                         # reference frame will be the curr pose of the robot
-                        current_distance = abs(
+                        curr_distance = abs(
                             robot_odom.pose.pose.position.x - starting_aria_x)
 
-                        if abs(distance - current_distance) < tolerance_d:
+                        if abs(distance - curr_distance) < tolerance_d:
                             twist.linear.x = 0
                             self.velocity_pub.publish(twist)
                             rospy.loginfo('advance_fine OK')
@@ -216,9 +216,9 @@ class GoalParser(object):
                 )
                 # Determine the direction of the movement (a[2] -> yaw)
                 if starting_amcl_a[2] < (starting_amcl_a[2] + angle):
-                    twist.linear.z = self.velocities['ang_vel']
+                    twist.angular.z = self.velocities['ang_vel']
                 else:
-                    twist.linear.z = -self.velocities['ang_vel']
+                    twist.angular.z = -self.velocities['ang_vel']
                 self.velocity_pub.publish(twist)
                 t = time.time()
                 while True:
@@ -240,10 +240,26 @@ class GoalParser(object):
                              robot_odom.pose.pose.orientation.w]
                         )
                         # reference frame will be the curr pose of the robot
-                        current_distance = abs(
-                            current_a[2] - starting_aria_a[2])
+                        curr_distance = 0
+                        if (starting_aria_a[2] > 0 and (starting_aria_a[2] + angle < pi)) or (starting_aria_a[2] < 0 and (starting_aria_a[2] + angle > -pi)):
+                            curr_distance = abs(
+                                    current_a[2] - starting_aria_a[2])
+                        else:
+                            if starting_aria_a[2] > 0 and current_a[2] > 0:
+                                curr_distance = abs(
+                                        current_a[2] - starting_aria_a[2])
+                            elif starting_aria_a[2] > 0 > current_a[2]:
+                                curr_distance = abs(
+                                        2 * pi + current_a[2] - starting_aria_a[2])
+                            elif starting_aria_a[2] < 0 and current_a[2] < 0:
+                                curr_distance = abs(
+                                        current_a[2] - starting_aria_a[2])
+                            # (starting_aria_a[2] < 0 and current_a[2] > 0)
+                            else:
+                                curr_distance = abs(
+                                        -((2 * pi) - current_a[2]) - starting_aria_a[2])
 
-                        if abs(angle - current_distance) < tolerance_a:
+                        if abs(angle - curr_distance) < tolerance_a:
                             twist.angular.z = 0
                             self.velocity_pub.publish(twist)
                             # Send response
@@ -258,9 +274,6 @@ class GoalParser(object):
         else:
             rospy.loginfo('Invalid navigation command!')
             return JsonSrvResponse('{"status" : "navigation_error"}')
-
-    def reload_files(self, req):
-        pass
 
     @staticmethod
     def run():
