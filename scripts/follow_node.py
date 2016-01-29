@@ -82,7 +82,7 @@ class Follower(object):
 
     def person_callback(self, msg):
         json_dict = json.loads(msg.json)
-        if json_dict['text'] == ['null'] or json_dict['text'] == '[0,0]':
+        if json_dict['text'] == '[null]' or json_dict['text'] == '[0,0]':
             if self.person_detected:
                 rospy.loginfo('Not following')
             self.person_detected = False
