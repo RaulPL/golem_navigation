@@ -72,13 +72,13 @@ class Follower(object):
         self.distance = json_dict['distance']
         self.follow = True
         rospy.loginfo('Following status: {0}'.format(self.follow))
-        return JsonSrvResponse("{'status':'following'}")
+        return JsonSrvResponse('{"status": "following"}')
 
     def stop_follow_person(self, req):
         self.follow = False
         self.move_base_ac.cancel_goal()
         rospy.loginfo('Following status: {0}'.format(self.follow))
-        return JsonSrvResponse("{'status':'not_following'}")
+        return JsonSrvResponse('{"status": "not_following"}')
 
     def person_callback(self, msg):
         json_dict = json.loads(msg.json)
